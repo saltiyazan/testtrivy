@@ -1,0 +1,15 @@
+[project]
+name = "testtrivy"
+version = "0.1.0"
+description = "Test repository for Trivy vulnerability scanning"
+requires-python = ">=3.8"
+dependencies = [
+    "django==2.2.28",  # This version has known CVEs
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+python = "3.8" 
