@@ -25,24 +25,17 @@ jobs:
 
       - name: Install Trivy
         run: |
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.50.0
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.61.0
 
-      - name: Run Trivy vulnerability scanner (table format)
+      - name: Run Trivy vulnerability scanner on uv.lock
         run: |
-          trivy fs uv.lock -d \
+          trivy fs uv.lock -d --format sarif --output trivy-results.sarif \
             --scanners vuln \
             --dependency-tree \
-            --severity CRITICAL,HIGH,MEDIUM \
-            --format table
-
-      - name: Run Trivy vulnerability scanner (SARIF format)
-        run: |
-          trivy fs . --format sarif --output trivy-results.sarif \
-            --scanners vuln \
             --severity CRITICAL,HIGH,MEDIUM
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: "trivy-results.sarif"
           category: "Trivy Vulnerability Scan"
