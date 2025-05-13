@@ -27,11 +27,18 @@ jobs:
         run: |
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.50.0
 
-      - name: Run Trivy vulnerability scanner on uv.lock
+      - name: Run Trivy vulnerability scanner (table format)
         run: |
-          trivy fs uv.lock -d --format sarif --output trivy-results.sarif \
+          trivy fs uv.lock -d \
             --scanners vuln \
             --dependency-tree \
+            --severity CRITICAL,HIGH,MEDIUM \
+            --format table
+
+      - name: Run Trivy vulnerability scanner (SARIF format)
+        run: |
+          trivy fs . --format sarif --output trivy-results.sarif \
+            --scanners vuln \
             --severity CRITICAL,HIGH,MEDIUM
 
       - name: Upload Trivy scan results to GitHub Security tab
